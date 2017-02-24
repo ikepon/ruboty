@@ -1,27 +1,23 @@
-require 'octokit'
-
 module Ruboty
   module Handlers
     class Github < Base
-      on(/hello/i, name: "hello", description: "こんにちは")
-      on(/issues/i, name: "issues", description: "issue を出す")
+      on(/hello/i, name: "hello", description: "挨拶します")
+      on(/issues/i, name: "issues", description: "最新の20件の issue を出す")
 
       def hello(message)
-        user = client.user
-        msg  = user.login
+        msg  = "こんにちは！"
         message.reply(msg)
       end
 
-      def say(message)
-        user = client.user
-        msg  = user.login
-        message.reply('say')
-      end
+      def issues(message)
+        issues = client.issues(ENV['REPOSITORY'])
+        issue_names = "最新の20件だ！\n"
 
-      private
+        issues.last(20).each do |issue|
+          issue_names += "##{issue[:number]} #{issue[:title]} (#{issue[:url]})\n"
+        end
 
-      def client
-        @client = Octokit::Client.new(:access_token => ENV['GITHUB_TOKEN'])
+        message.reply(issue_names)
       end
     end
   end
