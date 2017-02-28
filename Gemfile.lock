@@ -6,6 +6,10 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    addressable (2.5.0)
+      public_suffix (~> 2.0, >= 2.0.2)
+    byebug (9.0.6)
+    coderay (1.1.1)
     concurrent-ruby (1.0.4)
     dotenv (2.2.0)
     event_emitter (0.2.5)
@@ -19,9 +23,21 @@ GEM
       websocket-driver (>= 0.5.1)
     i18n (0.8.1)
     mem (0.1.5)
+    method_source (0.8.2)
     minitest (5.10.1)
     multi_json (1.12.1)
     multipart-post (2.0.0)
+    octokit (4.6.2)
+      sawyer (~> 0.8.0, >= 0.5.3)
+    pry (0.10.4)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    pry-byebug (3.4.2)
+      byebug (~> 9.0)
+      pry (~> 0.10)
+    public_suffix (2.0.5)
+    rake (11.3.0)
     ruboty (1.3.0)
       activesupport
       bundler
@@ -32,12 +48,15 @@ GEM
       ruboty (>= 1.1.4)
       slack-api (~> 1.2)
       websocket-client-simple (~> 0.3.0)
+    sawyer (0.8.1)
+      addressable (>= 2.3.5, < 2.6)
+      faraday (~> 0.8, < 1.0)
     slack-api (1.4.0)
       faraday (~> 0.11)
       faraday_middleware (~> 0.10.0)
       faye-websocket (~> 0.10.6)
       multi_json (~> 1.0, >= 1.0.3)
-    slop (4.4.1)
+    slop (3.6.0)
     thread_safe (0.3.6)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
@@ -53,6 +72,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  octokit
+  pry-byebug
+  rake
   ruboty
   ruboty-slack_rtm
 
