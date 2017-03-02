@@ -54,7 +54,9 @@ module Ruboty
 
         client.create_release(repo, tag_name, prerelease: true, target_commitish: original_branch)
 
-        message.reply('Pre-release タグを作成しました')
+        create_message = "Pre-release タグを作成しました (#{original_branch} ブランチから作成しています)"
+
+        message.reply(create_message)
 
       rescue Octokit::UnprocessableEntity => e
         error_message = e.errors.first[:field] + ' ' + e.errors.first[:code]
