@@ -7,6 +7,8 @@ module Ruboty
 
       on(/create lw_tag (?<name>.+) (?<branch>.+)/i, name: 'create_ref', description: '指定ブランチから lightweight tag を作成(ブランチがない場合はmasterから作成)')
 
+      on(/create prerelease (?<name>.+) (?<branch>.+)/i, name: 'create_prerelease', description: '指定ブランチから Pre-release タグを作成(ブランチがない場合はmasterから作成)')
+
       def issues(message)
         issues = client.issues(repo)
         issue_names = "最新の20件だ！\n"
@@ -42,7 +44,17 @@ module Ruboty
 
         client.create_ref(repo, 'tags/' + tag_name, original_branch_sha1)
 
-        message.reply('lightweight tag を作成しました')
+        message.reply('lightweight タグを作成しました')
+      end
+
+      def create_prerelease(message)
+        tag_name = message[:name]
+        branche_names = client.branches(repo).map(&:name)
+        original_branch = branche_names.include?(message[:branch]) ? message[:branch] : 'master'
+
+        client.create_release(repo, tag_name, prerelease: true, target_commitish: original_branch)
+
+        message.reply('Pre-release タグを作成しました')
       end
     end
   end
