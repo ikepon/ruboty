@@ -6,6 +6,10 @@ module Ruboty
       def client
         @client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
       end
+
+      def repo
+        @repo = ENV['REPOSITORY']
+      end
     end
   end
 end
