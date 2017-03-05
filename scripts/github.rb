@@ -1,6 +1,12 @@
 module Ruboty
   module Handlers
     class Github < Base
+      # 複数リポジトリにまたがるときにそのリポジトリを指定する
+      REPOSITORY_NAME = [
+        'ikepon/ruboty',
+        'ikepon/hubot'
+      ].freeze
+
       on(/issues/i, name: 'issues', description: '最新の20件の issue を表示')
 
       on(/branches/i, name: 'branches', description: 'ブランチ一覧を表示')
@@ -8,6 +14,8 @@ module Ruboty
       on(/create lw_tag (?<tag_name>.+) (?<branch>.+)/i, name: 'create_ref', description: '指定ブランチから lightweight tag を作成(ブランチがない場合はmasterから作成)')
 
       on(/create prerelease (?<tag_name>.+) (?<branch>.+)/i, name: 'create_prerelease', description: '指定ブランチから Pre-release タグを作成(ブランチがない場合はmasterから作成)')
+
+      on(/create prerelease all (?<tag_name>.+) (?<branch>.+)/i, name: 'create_prerelease_all', description: '事前に指定したすべてのリポジトリのブランチから Pre-release タグを作成(ブランチがない場合はmasterから作成)')
 
       def issues(message)
         issues = client.issues(repo)
@@ -57,6 +65,25 @@ module Ruboty
         create_message = "Pre-release タグを作成しました (#{original_branch} ブランチから作成しています)"
 
         message.reply(create_message)
+
+      rescue Octokit::UnprocessableEntity => e
+        error_message = e.errors.first[:field] + ' ' + e.errors.first[:code]
+        message.reply(error_message)
+      end
+
+      def create_prerelease_all(message)
+        tag_name = message[:tag_name]
+
+        REPOSITORY_NAME.each do |repo|
+          branche_names = client.branches(repo).map(&:name)
+          original_branch = branche_names.include?(message[:branch]) ? message[:branch] : 'master'
+
+          client.create_release(repo, tag_name, prerelease: true, target_commitish: original_branch)
+
+          create_message = "Pre-release タグを作成しました (#{original_branch} ブランチから作成しています)"
+
+          message.reply(create_message)
+        end
 
       rescue Octokit::UnprocessableEntity => e
         error_message = e.errors.first[:field] + ' ' + e.errors.first[:code]
