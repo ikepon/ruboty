@@ -5,4 +5,6 @@ gem 'ruboty'
 gem 'ruboty-slack_rtm'
 gem 'octokit'
 
-gem 'pry-byebug'
+group :development do
+  gem 'pry-byebug'
+end
